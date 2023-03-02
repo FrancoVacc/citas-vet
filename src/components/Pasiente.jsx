@@ -29,6 +29,14 @@ const Pasiente = ({ data }) => {
           síntomas: <span className=" normal-case font-normal">{sintoma}</span>
         </h2>
       </div>
+      <div className="mb-2">
+        <button className="py-2 px-5 bg-red-600 hover:bg-red-500 text-white rounded-sm mr-5">
+          Eliminar
+        </button>
+        <button className="py-2 px-5 bg-blue-600 hover:bg-blue-500 text-white rounded-sm">
+          Actualizar
+        </button>
+      </div>
     </div>
   );
 };
