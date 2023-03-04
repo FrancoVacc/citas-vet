@@ -1,7 +1,8 @@
 import React from "react";
 
-const Pasiente = ({ data }) => {
-  const { name, owner, email, checkin, sintoma } = data;
+const Pasiente = ({ data, deleteData, updateData }) => {
+  const { id, name, owner, email, checkin, sintoma } = data;
+
   return (
     <div className="bg-white shadow-md px-5 py-5 rounded-md my-2">
       <div className="mb-2">
@@ -30,10 +31,16 @@ const Pasiente = ({ data }) => {
         </h2>
       </div>
       <div className="mb-2">
-        <button className="py-2 px-5 bg-red-600 hover:bg-red-500 text-white rounded-sm mr-5">
+        <button
+          className="py-2 px-5 bg-red-600 hover:bg-red-500 text-white rounded-sm mr-5"
+          onClick={() => deleteData(id)}
+        >
           Eliminar
         </button>
-        <button className="py-2 px-5 bg-blue-600 hover:bg-blue-500 text-white rounded-sm">
+        <button
+          className="py-2 px-5 bg-blue-600 hover:bg-blue-500 text-white rounded-sm"
+          onClick={() => updateData(id)}
+        >
           Actualizar
         </button>
       </div>

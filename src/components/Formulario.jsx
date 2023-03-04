@@ -1,16 +1,32 @@
-import React from "react";
 import { useFormik } from "formik";
+import { useEffect } from "react";
 import * as Yup from "yup";
 import ErrorMessage from "./ErrorMessage";
 
-const Formulario = ({ setData, data }) => {
+const Formulario = ({ setData, data, formValues }) => {
   const onSubmit = (values, resetForm) => {
-    values.id = Date.now();
-    setData([...data, values]);
-    resetForm({ values: "" });
+    if (formValues[0] === undefined) {
+      values.id = Date.now();
+      setData([...data, values]);
+      resetForm({ values: "" });
+    } else {
+      const newData = data.map((item) =>
+        item.id === values.id ? { ...values } : item
+      );
+      setData(newData);
+      resetForm({ values: "" });
+    }
   };
 
-  const formik = useFormik({
+  const {
+    handleSubmit,
+    handleChange,
+    handleBlur,
+    values,
+    errors,
+    touched,
+    setValues,
+  } = useFormik({
     initialValues: {
       name: "",
       owner: "",
@@ -36,6 +52,18 @@ const Formulario = ({ setData, data }) => {
     onSubmit: (values, { resetForm }) => onSubmit(values, resetForm),
   });
 
+  const updateValues = (formValues) => {
+    const newData = formValues[0];
+    if (newData == undefined) {
+      return;
+    }
+    setValues(newData);
+  };
+
+  useEffect(() => {
+    updateValues(formValues);
+  }, [formValues]);
+
   return (
     <div className="md:w-2/5 md:px-10 px-2 py-1">
       <div className="text-center">
@@ -47,7 +75,7 @@ const Formulario = ({ setData, data }) => {
       </div>
       <form
         className=" bg-white py-10 px-5 rounded-md shadow-md"
-        onSubmit={formik.handleSubmit}
+        onSubmit={handleSubmit}
       >
         <div>
           <label htmlFor="mascota" className="uppercase block font-black">
@@ -58,12 +86,12 @@ const Formulario = ({ setData, data }) => {
             placeholder="Ingresa el nombre de la mascota"
             id="mascota"
             name="name"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.name}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.name}
             className="w-full px-2 py-2 border border-gray-400 rounded-sm"
           />
-          {formik.errors.name && <ErrorMessage error={formik.errors.name} />}
+          {errors.name && touched.name && <ErrorMessage error={errors.name} />}
         </div>
         <div>
           <label htmlFor="dueño" className="uppercase block font-black">
@@ -74,12 +102,14 @@ const Formulario = ({ setData, data }) => {
             placeholder="Ingresa el nombre del dueño"
             id="dueño"
             name="owner"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.owner}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.owner}
             className="w-full px-2 py-2 border border-gray-400 rounded-sm"
           />
-          {formik.errors.owner && <ErrorMessage error={formik.errors.owner} />}
+          {errors.owner && touched.owner && (
+            <ErrorMessage error={errors.owner} />
+          )}
         </div>
         <div>
           <label htmlFor="mail" className="uppercase block font-black">
@@ -90,12 +120,14 @@ const Formulario = ({ setData, data }) => {
             placeholder="Ex: mail@mail.com"
             id="mail"
             name="email"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.email}
             className="w-full px-2 py-2 border border-gray-400 rounded-sm"
           />
-          {formik.errors.email && <ErrorMessage error={formik.errors.email} />}
+          {errors.email && touched.email && (
+            <ErrorMessage error={errors.email} />
+          )}
         </div>
         <div>
           <label htmlFor="fecha" className="uppercase block font-black">
@@ -105,13 +137,13 @@ const Formulario = ({ setData, data }) => {
             type="date"
             id="fecha"
             name="checkin"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.checkin}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.checkin}
             className="w-full px-2 py-2 border border-gray-400 rounded-sm"
           />
-          {formik.errors.checkin && (
-            <ErrorMessage error={formik.errors.checkin} />
+          {errors.checkin && touched.checkin && (
+            <ErrorMessage error={errors.checkin} />
           )}
         </div>
         <div>
@@ -122,19 +154,23 @@ const Formulario = ({ setData, data }) => {
             placeholder="Ingresa el nombre de la mascota"
             id="sintomas"
             name="sintoma"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.sintoma}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.sintoma}
             className="w-full px-2 py-2 border border-gray-400 rounded-sm resize-none"
           />
-          {formik.errors.sintoma && (
-            <ErrorMessage error={formik.errors.sintoma} />
+          {errors.sintoma && touched.sintoma && (
+            <ErrorMessage error={errors.sintoma} />
           )}
         </div>
         <input
           type="submit"
           className="w-full bg-indigo-600 hover:bg-indigo-400 text-white py-2"
-          value={"Cargar Pasiente"}
+          value={
+            formValues[0] !== undefined
+              ? "Actualizar Pasiente"
+              : "Cargar Pasiente"
+          }
         />
       </form>
     </div>

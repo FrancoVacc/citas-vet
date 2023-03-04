@@ -7,19 +7,39 @@ const initialData = JSON.parse(localStorage.getItem("citas")) || [];
 
 const App = () => {
   const [data, setData] = useState(initialData);
+  const [values, setValues] = useState({
+    id: null,
+    name: "",
+    owner: "",
+    email: "",
+    checkin: "",
+    sintoma: "",
+  });
 
   useEffect(() => {
     localStorage.setItem("citas", JSON.stringify(data));
   }, [data]);
 
-  console.log(data);
+  const deleteData = (id) => {
+    const newData = data.filter((data) => data.id !== id);
+    setData(newData);
+  };
+
+  const updateData = (id) => {
+    const newData = data.filter((data) => data.id == id);
+    setValues(newData);
+  };
 
   return (
     <div>
       <Header />
       <div className="md:flex">
-        <Formulario setData={setData} data={data} />
-        <Pasientes data={data} />
+        <Formulario setData={setData} data={data} formValues={values} />
+        <Pasientes
+          data={data}
+          deleteData={deleteData}
+          updateData={updateData}
+        />
       </div>
     </div>
   );
